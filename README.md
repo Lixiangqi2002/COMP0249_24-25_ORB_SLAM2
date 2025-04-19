@@ -4,7 +4,7 @@
 ## TUM Original
 Estimation
 ```
-(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM2.yaml rgbd_dataset_freiburg2_large_with_loop fr02_results.txt
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM3.yaml rgbd_dataset_freiburg3_long_office_household/ fr03_results.txt
 
 ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
 (modifications carried out at UCL, 2022)
@@ -15,21 +15,18 @@ under certain conditions. See LICENSE.txt.
 Input sensor was set to: Monocular
 
 Loading ORB Vocabulary. This could take a while...
-Using the text file. This could take a while...
-Padded dictionary size = 1082074
-Saving the binary cache to /home/selina-xiangqi/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/Install/var/lib/orbslam2/ORBvoc.bin
-Vocabulary loaded in 3.08s
+Using the binary cache file
+Vocabulary loaded in 0.09s
 
 Camera Parameters: 
-- fx: 520.909
-- fy: 521.007
-- cx: 325.141
-- cy: 249.702
-- k1: 0.231222
-- k2: -0.784899
-- k3: 0.917205
-- p1: -0.003257
-- p2: -0.000105
+- fx: 535.4
+- fy: 539.2
+- cx: 320.1
+- cy: 247.6
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
 - fps: 30
 - color order: RGB (ignored if grayscale)
 
@@ -42,56 +39,521 @@ ORB Extractor Parameters:
 
 -------
 Start processing sequence ...
-Images in the sequence: 5182
+Images in the sequence: 2585
 
-New Map created with 129 points
+New Map created with 158 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
 Viewer thread finished.
 Viewer started, waiting for thread.
 System Shutdown
 -------
 
-median tracking time: 0.00855813
-mean tracking time: 0.0089992
+median tracking time: 0.0109459
+mean tracking time: 0.0117162
 
-Saving camera trajectory to fr02_results.txt ...
+Saving camera trajectory to fr03_results.txt ...
 
 trajectory saved!
 All done
+
 ```
 APE
 ```
-(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg2_large_with_loop/groundtruth.txt fr02_results.txt -as --plot --plot_mode xz --save_plot tum_fr02_ape.png
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results.txt -as --plot --plot_mode xz --save_plot tum_fr03_ape.png
 APE w.r.t. translation part (m)
 (with Sim(3) Umeyama alignment)
 
-       max	0.282611
-      mean	0.051659
-    median	0.046365
-       min	0.002891
-      rmse	0.059501
-       sse	2.938527
-       std	0.029526
+       max	0.036452
+      mean	0.011115
+    median	0.009880
+       min	0.000367
+      rmse	0.012481
+       sse	0.398503
+       std	0.005679
+
 ```
 RPE
 ```
-(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg2_large_with_loop/groundtruth.txt fr02_results.txt -as --plot --plot_mode xz --save_plot tum_fr02_rpe.png
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results.txt -as --plot --plot_mode xz --save_plot tum_fr03_rpe.png
 RPE w.r.t. translation part (m)
 for delta = 1 (frames) using consecutive pairs
 (with Sim(3) Umeyama alignment)
 
-       max	0.227649
-      mean	0.016966
-    median	0.010893
-       min	0.000794
-      rmse	0.028466
-       sse	0.671727
-       std	0.022857
+       max	0.028161
+      mean	0.004716
+    median	0.003922
+       min	0.000275
+      rmse	0.005637
+       sse	0.081258
+       std	0.003089
 ```
 
 ## TUM Features
+### 3000
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM3.yaml rgbd_dataset_freiburg3_long_office_household/ fr03_results_3000.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.10s
+
+Camera Parameters: 
+- fx: 535.4
+- fy: 539.2
+- cx: 320.1
+- cy: 247.6
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 3000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 2585
+
+New Map created with 582 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.0223829
+mean tracking time: 0.0242436
+
+Saving camera trajectory to fr03_results_3000.txt ...
+
+trajectory saved!
+All done
+
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_3000.txt -as --plot --plot_mode xz --save_plot tum_fr03_ape_3000.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.429761
+      mean	0.123313
+    median	0.096019
+       min	0.002105
+      rmse	0.151247
+       sse	58.424123
+       std	0.087575
+
+```
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_3000.txt -as --plot --plot_mode xz --save_plot tum_fr03_rpe_3000.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.285454
+      mean	0.010592
+    median	0.005579
+       min	0.000234
+      rmse	0.024743
+       sse	1.563032
+       std	0.022362
+
+```
+
+### 5000 
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM3.yaml rgbd_dataset_freiburg3_long_office_household/ fr03_results_5000.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.10s
+
+Camera Parameters: 
+- fx: 535.4
+- fy: 539.2
+- cx: 320.1
+- cy: 247.6
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 5000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 2585
+
+New Map created with 462 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.02805
+mean tracking time: 0.0303095
+
+Saving camera trajectory to fr03_results_5000.txt ...
+
+trajectory saved!
+All done
+
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_5000.txt -as --plot --plot_mode xz --save_plot tum_fr03_ape_5000.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.697844
+      mean	0.148727
+    median	0.108102
+       min	0.014591
+      rmse	0.189153
+       sse	91.343775
+       std	0.116873
+
+```
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_5000.txt -as --plot --plot_mode xz --save_plot tum_fr03_rpe_5000.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.718423
+      mean	0.022506
+    median	0.007155
+       min	0.000283
+      rmse	0.061519
+       sse	9.658215
+       std	0.057254
+
+```
+
+### Compare 1000, 3000, 5000 with GT
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum fr03_results.txt fr03_results_3000.txt fr03_results_5000.txt --ref=rgbd_dataset_freiburg3_long_office_household/groundtruth.txt -va --plot --plot_mode xz -as --save_plot tum_fr03_compare_features.png 
+--------------------------------------------------------------------------------
+Loaded 2558 stamps and poses from: fr03_results.txt
+Loaded 2554 stamps and poses from: fr03_results_3000.txt
+Loaded 2553 stamps and poses from: fr03_results_5000.txt
+Loaded 8710 stamps and poses from: rgbd_dataset_freiburg3_long_office_household/groundtruth.txt
+--------------------------------------------------------------------------------
+Found 2558 of max. 2558 possible matching timestamps between...
+	reference
+and:	fr03_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99958363 -0.01194273 -0.02626679]
+ [ 0.01725461  0.4822243  -0.87587785]
+ [ 0.02312686 -0.87596638 -0.48181745]]
+Translation of alignment:
+[-0.69439828  2.69913405  1.74473895]
+Scale correction: 2.5382504118349623
+--------------------------------------------------------------------------------
+Found 2554 of max. 2554 possible matching timestamps between...
+	reference
+and:	fr03_results_3000.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results_3000.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99608279 -0.00570882 -0.08824109]
+ [ 0.07511853  0.47183934 -0.87847871]
+ [ 0.0466507  -0.88166606 -0.46956221]]
+Translation of alignment:
+[-0.6304575   2.80503989  1.75305908]
+Scale correction: 2.5170061152045564
+--------------------------------------------------------------------------------
+Found 2553 of max. 2553 possible matching timestamps between...
+	reference
+and:	fr03_results_5000.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results_5000.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-9.98566738e-01 -8.75051189e-04 -5.35135850e-02]
+ [ 4.67972816e-02  4.70907725e-01 -8.80940366e-01]
+ [ 2.59708285e-02 -8.82182038e-01 -4.70191841e-01]]
+Translation of alignment:
+[-0.71391032  2.76026874  1.73161206]
+Scale correction: 2.3675001996563374
+--------------------------------------------------------------------------------
+name:	fr03_results
+infos:
+	duration (s)	86.2361330986023
+	nr. of poses	2558
+	path length (m)	25.34406127097212
+	pos_end (m)	[-0.56838691  1.98046128  1.54239906]
+	pos_start (m)	[-0.61760596  2.71804483  1.74639093]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.626675
+--------------------------------------------------------------------------------
+name:	fr03_results_3000
+infos:
+	duration (s)	86.10396194458008
+	nr. of poses	2554
+	path length (m)	39.300094168370144
+	pos_end (m)	[-0.59813392  2.04237435  1.54243564]
+	pos_start (m)	[-0.59933441  2.82673215  1.74508837]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.758846
+--------------------------------------------------------------------------------
+name:	fr03_results_5000
+infos:
+	duration (s)	86.06814908981323
+	nr. of poses	2553
+	path length (m)	68.44186596896168
+	pos_end (m)	[-0.61795442  2.01186862  1.56137419]
+	pos_start (m)	[-0.62112158  2.7942142   1.7366584 ]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.794659
+--------------------------------------------------------------------------------
+name:	groundtruth
+infos:
+	duration (s)	87.08949995040894
+	nr. of poses	8710
+	path length (m)	22.19745284585122
+	pos_end (m)	[-0.5503  1.9752  1.5438]
+	pos_start (m)	[-0.6832  2.6909  1.7373]
+	t_end (s)	1341848067.8795
+	t_start (s)	1341847980.79
+--------------------------------------------------------------------------------
+
+```
 
 ## TUM LOOP NO CLOSURE
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM3.yaml rgbd_dataset_freiburg3_long_office_household/ fr03_results_no_loop_closure.txt
 
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.09s
+
+Camera Parameters: 
+- fx: 535.4
+- fy: 539.2
+- cx: 320.1
+- cy: 247.6
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 1000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 2585
+
+New Map created with 163 points
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.0112035
+mean tracking time: 0.0116479
+
+Saving camera trajectory to fr03_results_no_loop_closure.txt ...
+
+trajectory saved!
+All done
+
+```
+
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_no_loop_closure.txt -as --plot --plot_mode xz --save_plot tum_fr03_no_loop_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.069766
+      mean	0.021849
+    median	0.018926
+       min	0.001330
+      rmse	0.025250
+       sse	1.630248
+       std	0.012657
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_no_loop_closure.txt -as --plot --plot_mode xz --save_plot tum_fr03_no_loop_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.027567
+      mean	0.004534
+    median	0.003850
+       min	0.000195
+      rmse	0.005371
+       sse	0.073733
+       std	0.002880
+
+```
+
+Trajectory Comparison
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum fr03_results.txt fr03_results_no_loop_closure.txt --ref=rgbd_dataset_freiburg3_long_office_household/groundtruth.txt -va --plot --plot_mode xz -as --save_plot tum_fr03_compare_no_loop.png 
+--------------------------------------------------------------------------------
+Loaded 2558 stamps and poses from: fr03_results.txt
+Loaded 2557 stamps and poses from: fr03_results_no_loop_closure.txt
+Loaded 8710 stamps and poses from: rgbd_dataset_freiburg3_long_office_household/groundtruth.txt
+--------------------------------------------------------------------------------
+Found 2558 of max. 2558 possible matching timestamps between...
+	reference
+and:	fr03_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99958363 -0.01194273 -0.02626679]
+ [ 0.01725461  0.4822243  -0.87587785]
+ [ 0.02312686 -0.87596638 -0.48181745]]
+Translation of alignment:
+[-0.69439828  2.69913405  1.74473895]
+Scale correction: 2.5382504118349623
+--------------------------------------------------------------------------------
+Found 2557 of max. 2557 possible matching timestamps between...
+	reference
+and:	fr03_results_no_loop_closure.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results_no_loop_closure.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99940819 -0.01248926 -0.03205132]
+ [ 0.021996    0.48434523 -0.87460041]
+ [ 0.02644702 -0.87478781 -0.48378387]]
+Translation of alignment:
+[-0.65856223  2.6420813   1.73773886]
+Scale correction: 2.4142894718975114
+--------------------------------------------------------------------------------
+name:	fr03_results
+infos:
+	duration (s)	86.2361330986023
+	nr. of poses	2558
+	path length (m)	25.34406127097212
+	pos_end (m)	[-0.56838691  1.98046128  1.54239906]
+	pos_start (m)	[-0.61760596  2.71804483  1.74639093]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.626675
+--------------------------------------------------------------------------------
+name:	fr03_results_no_loop_closure
+infos:
+	duration (s)	86.20407009124756
+	nr. of poses	2557
+	path length (m)	24.915821462224464
+	pos_end (m)	[-0.57088958  1.99791653  1.54386649]
+	pos_start (m)	[-0.57901367  2.66631864  1.73708248]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.658738
+--------------------------------------------------------------------------------
+name:	groundtruth
+infos:
+	duration (s)	87.08949995040894
+	nr. of poses	8710
+	path length (m)	22.19745284585122
+	pos_end (m)	[-0.5503  1.9752  1.5438]
+	pos_start (m)	[-0.6832  2.6909  1.7373]
+	t_end (s)	1341848067.8795
+	t_start (s)	1341847980.79
+--------------------------------------------------------------------------------
+
+```
 
 
 # KITTI (07; to use sequence No.10, replace all 07 to 10)
