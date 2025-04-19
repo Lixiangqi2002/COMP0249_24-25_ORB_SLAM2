@@ -1,218 +1,641 @@
-# ORB-SLAM2
-
-This is a refactoring of the ORB_SLAM2 repository. It uses up-to-date cmake, up-to-date DBoW2, g2o and Pangolin libraries, supports all static and all dynamic libraries (for debugging) and C++17 multi-platform support for sleep, threads, namespaces, etc.
-
-It has been succesfully built on Ubunutu (18.04-22.04), Windows 10 and 11 (WSL2), Intel Mac and M1 Mac. (The Windows 10 / 11 native build is currently broken; vcpkg and cmake do not interact properly and whether something builds or not changes on an hourly basis.)
-
-## User-visible changes from the original ORB-SLAM2:
-
-1.  All executables are installed in `./Install/bin` and the suffix "_d" is used to denote debug builds. For instance, if you want to run mono_kitti with the default (release) Build.sh file setting, the executable is at `./Install/bin/mono_kitti`. If you build with debugging enabled, the executable is `./Install/bin/mono_kitti_d`. Debug build is only required if you are doing some debugging and you are unlikely to need it for the coursework.
-
-2. The ORB vocabulary is loaded automatically and does not have to be specified on the command line. (It is installed in the `./Install/var/lib/orbslam2` subdirectory). The system will try to load the binary version of the vocabulary. If it is not able to, it will load the text version, convert it, and save the binary version to the same directory. This speeds up start up times from several seconds to less than 0.5s.
-
-3. The settings files are installed in `./Install/etc/orbslam2/`. By default, the executables will first search the current directory for the settings file and, if not defined, it will try the default directory. This means that there is less to type if running the standard examples (TUM, EuRoC, KITTI).
-   
-4. Some error checking is carried out on command line arguments to validate things like files and directories exist.
-   
-## Build instructions:
-
-### Prerequisites
-
-You will need to clone this repository using `git clone https://github.com/UCL/COMP0249_24-25_ORB_SLAM2.git`
-
-It depends on a few widely-available libraries:
-
-1. eigen3
-2. boost
-3. OpenCV (either 3.x or 4.x)
-4. Suite sparse
-5. GLEW
-6. unzip
-7. cmake (version 3.20 or above)
-
-This repo ships with matched versions of DLib and DBoW2 (for the bag of words for data association), g2o (both front and backend optimization) and pangolin (GUI). The latter two are the most current release targets (as of 14/03/2025).
-
-The build instructions are deliberately designed to be similar on all supported operating systems.
-
-### Linux (and WSL2) build instructions
-
-Install the dependencies:
-
-`sudo apt install cmake build-essential libeigen3-dev libboost-dev libboost-filesystem-dev libblas-dev liblapack-dev libepoxy-dev libopencv-dev libglew-dev mesa-utils libgl1-mesa-glx unzip`
-
-The default (Release) version of the library is built by running:
-
-`./Build.sh`
-
-To build a debug version, type:
-
-`./Build.sh Debug`
-
-If you want to avoid typing `./Install/bin` everywhere, run this command from the command line:
-
-`set PATH=$PATH:$PWD/Install/bin`
-
-#### Installing cmake 3.20:
-
-If your version of cmake is older than 3.20, you will need to install the most recent version of cmake. There are several ways to do it. One is to use the current official release from kitware:
-
-`wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -`
-
-`sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'`
-
-`sudo apt update`
-
-`sudo apt install cmake`
-
-The other is to follow instructions and build and install from source.
-
-#### Display issues:
-
-You can get errors of the form `terminate called after throwing an instance of 'std::runtime_error' what():  Pangolin X11: Failed to open X display`. To fix (at least in our case) set:
-
-`export DISPLAY=:0`
-
-### Mac (Intel and Apple Silicon) build instructions
-
-We use `homebrew` (https://brew.sh/) and build using the XCode command line tools. Please ensure that both have been installed and that `brew doctor` is happy.
-
-Install the dependencies:
-
-`brew install eigen boost suitesparse opencv glew`
-
-You should be able to build the release by by running:
-
-`./Build.sh`
-
-To build a debug version, type:
-
-`./Build.sh Debug`
-
-If you want to avoid typing `./Install/bin` everywhere, run this command from the command line:
-
-`set PATH=$PATH:$PWD/Install/bin`
-
-### Windows 10/11 native build (does not work; do NOT use - use WSL instructions instead)
-
-Windows 10/11 is a more challenging OS to build on because it doesn't have a completely standard location for development. We use `vcpkg` (https://github.com/microsoft/vcpkg) but other package management systems are available.
-
-You need to install [git](https://git-scm.com/downloads), [Visual Studio](https://visualstudio.microsoft.com/vs/community/) and [vcpkg](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-powershell).
-
-After cloning the repository, install the vcpkg dependencies by running:
-
-`vcpkg install`
-
-This should create a directory `vcpkg_installed` in the current directory.
-
-You should be able to build by running:
-
-`Build.bat`
-
-to build a release version. To build a debug version, type:
-
-`Build.bat Debug`
-
-Internally, cmake uses `Ninja`.
-
-Set the path:
-
-`set PATH=%PATH%;%cd%\vcpkg_installed\%VCPKG_TRIPLE%`
-
-If you want to avoid typing `Install\bin everywhere`, modify the command to
-
-`set PATH=%PATH%;%cd%\Install\bin;%cd%\vcpkg_installed\%VCPKG_TRIPLE%`
-
-## Running Examples
-
-ORB-SLAM2 builds multiple executables to handle data from the TUM, KITTI and EuRoC datasets for monocular (`mono_tum`, `mono_kitti`, `mono_euroc`), stereo (`stereo_kitti`, `stereo_euroc`) and RGBD (`rgbd_tum`) types of data. Each programme has a slightly different way of being invoked. The original instructions can be found on the [ORB-SLAM2 github page](https://github.com/raulmur/ORB_SLAM2). Modified versions are provided below.
-
-Some of these methods of running the code seem to be fairly redundant, but we have included this redundancy to confirm with the original ORB-SLAM2 invocation.
-
-We assume the instructions have been followed to set the `PATH` variable so you don't have to type the full Install path.
-
-### Monocular SLAM
-
-#### TUM Dataset
-
-The data can be downloaded from [here](https://cvg.cit.tum.de/data/datasets/rgbd-dataset/download). Each dataset has a name of the form `fr_${fr_code}/${dataset_name}` on the webpage. When you download and uncompress it, you'll end up with a different folder name `${tum_dataset_folder}`. The command to run it is:
-
- `mono_tum TUM${fr_code}.yaml ${your_tum_dataset_folder} ${result_file_name}`
-
-For example, suppose we wish to run `mono_tum` on the Freiburg `fr1/xyz dataset`. Download the data set from the repository directory (https://vision.in.tum.de/data/datasets/rgbd-dataset/download) and uncompress it to, say the same directory you cloned the repository into. This should produce a directory called  `rgbd_dataset_freiburg1_xyz`.
-
-You can then run the code using:
-
-`mono_tum TUM1.yaml rgbd_dataset_freiburg1_xyz fr01_results.txt` 
-
-This will open the GUI, run the example, and write out a text file called `fr01_results.txt` which contains a time set of estiamtes of the camera pose.
-   
-#### KITTI Dataset
-
-KITTI is a widely-used dataset for SLAM in outdoor environments. It was collected at Karlsruhe. More details can be found on the [KITTI website](https://www.cvlibs.net/datasets/kitti/index.php).
-
-The dataset can be obtained from [Visual Odometry / SLAM Evaluation 2012](https://www.cvlibs.net/datasets/kitti/eval_odometry.php). It consists of a series of about 22 sequences (or runs) which were taken in different parts of the city under slightly different conditions. The downloads consist of all the data for a particular type of sensor for all the runs. 
-
-**For mono, only the _grey-scale_ dataset should be downloaded.**
-
-KITTI sequences are numbered 0,...,21. For run `${kitti_sequence}`, ORB-SLAM is invoked using the command line of the form:
-
- `mono_kitti KITTI${kitti_yaml_code}.yaml ${your_kitti_dataset_folder}/sequences/${kitti_sequence} ${result_file_name}`
-
-In the 22 sequences, the first 11 (00-10) has ground truth for comparison. And ORB-SLAM embedded the lens calibration parameters for the first 13 sequences (00-12) in the yaml file it provided.
-The `${kitti_yaml_code}` is determined as follows:
-
-* For KITTI runs `00-02`: `00-02`
-* For KITTI run `03`: `03`
-* For KITTI runs `04-12`: `04-12`
-
-For example, if you want to run KITTI sequence 05 and write the results in `kitti05_results.txt`, you would use the command:
-
- `mono_kitti KITTI04-12.yaml ${your_kitti_dataset_folder}/sequences/05 kitti05_results.txt`
-
-#### EuRoC Dataset
-
-The [EuRoC dataset](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets) is a challenging one which was collected for drone navigation. It consists of data collected from the drone (including camera and depth data) as well as very sophisticated ground-truth data from stand off outside-in tracking systems. There are two main sets of sequences: the machine hall (prefix MH) and the Vicon Room (prefix V).
-
-All runs should be downloaded using the ASL format.
-
-##### EuRoC Machine Hall Dataset
-
-The Machine Hall datasets all have the form `MH${mh_sequence}`. The command is:
-
- `mono_euroc EuRoC.yaml ${your_euroc_dataset_folder}/MH${mh_sequence_number}/mav0/cam0/data MH${mh_sequence_number}.txt`
-
-For example, for MH01 installed in the checkout directory, the command is:
-
-`mono_euroc EuRoC.yaml MH01/mav0/cam0/data MH01.txt`
-
-##### EuRoC Vicon Dataset
-
-For a Vicon Room-related run  with sequence `${v_sequence}`, the command is:
-
- `mono_euroc EuRoC.yaml ${your_euroc_folder}/cam0/data ${mh_sequence}.txt`
-
-### RGBD SLAM
-
-#### TUM Dataset
-
-This TUM mono dataset contains RGB as well. It can be downloaded from [here](https://cvg.cit.tum.de/data/datasets/rgbd-dataset/download). Each dataset has a name of the form `fr_${fr_code}/${dataset_name}` on the webpage. When you download and uncompress it, you'll end up with a different folder name `${tum_dataset_folder}`. The command to run it is:
-
-`mono_tum TUM${fr_code}.yaml ${your_tum_dataset_folder} {associations_file_name}`
-
-The associations file is used to link RGB and D files together. The files start with `fr_${fr_code}`, but there isn't a standard suffix that's used and has to be checked individuall. To run the basic set, an example would be:
-
-`mono_tum TUM1.yaml rgbd_dataset_freiburg1_xyz fr1_xyz.txt`
-
-### Stereo SLAM
-
-Add down here (need directories for left and right frames).
-
-#### EuRoC Dataset
-
-All the EuRoC datasets actually include two sets of camera data (`cam0` and `cam1`) already. To run the code, you have to specify the directories containing both the left and right image streams. For example, for MH01 run
-
-`stereo_euroc EuRoC.yaml MH_01/mav0/cam0/data MH_01/mav0/cam1/data MH01.txt`
-
-#### KITTI Dataset
-
-To do
+# Part 1
+
+# TUM 
+## TUM Original
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM2.yaml rgbd_dataset_freiburg2_large_with_loop fr02_results.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the text file. This could take a while...
+Padded dictionary size = 1082074
+Saving the binary cache to /home/selina-xiangqi/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/Install/var/lib/orbslam2/ORBvoc.bin
+Vocabulary loaded in 3.08s
+
+Camera Parameters: 
+- fx: 520.909
+- fy: 521.007
+- cx: 325.141
+- cy: 249.702
+- k1: 0.231222
+- k2: -0.784899
+- k3: 0.917205
+- p1: -0.003257
+- p2: -0.000105
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 1000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 5182
+
+New Map created with 129 points
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.00855813
+mean tracking time: 0.0089992
+
+Saving camera trajectory to fr02_results.txt ...
+
+trajectory saved!
+All done
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg2_large_with_loop/groundtruth.txt fr02_results.txt -as --plot --plot_mode xz --save_plot tum_fr02_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.282611
+      mean	0.051659
+    median	0.046365
+       min	0.002891
+      rmse	0.059501
+       sse	2.938527
+       std	0.029526
+```
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg2_large_with_loop/groundtruth.txt fr02_results.txt -as --plot --plot_mode xz --save_plot tum_fr02_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.227649
+      mean	0.016966
+    median	0.010893
+       min	0.000794
+      rmse	0.028466
+       sse	0.671727
+       std	0.022857
+```
+
+## TUM Features
+
+## TUM LOOP NO CLOSURE
+
+
+
+# KITTI (07; to use sequence No.10, replace all 07 to 10)
+## KITTI Original
+GT TO TUM
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/Evaluation$ python kitti_to_tum.py ~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/07/07.txt ~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/07/times.txt ~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/07/07_tum.txt
+```
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.14s
+
+Camera Parameters: 
+- fx: 707.091
+- fy: 707.091
+- cx: 601.887
+- cy: 183.11
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 10
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 2000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1101
+
+New Map created with 165 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+Tracking thread joined...
+-------
+
+median tracking time: 0.0138701
+mean tracking time: 0.0146444
+
+Saving camera trajectory to kitti07_results.txt ...
+
+trajectory saved!
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum 07/07_tum.txt kitti07_results.txt -as --plot --plot_mode xz --save_plot kitty07_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	8.383594
+      mean	3.724264
+    median	3.807131
+       min	0.203045
+      rmse	3.930284
+       sse	16930.060939
+       std	1.255785
+
+```
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum kitti07_results.txt 07/07_tum.txt  -as --plot --plot_mode xz --save_plot kitty07_results_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.183995
+      mean	0.028323
+    median	0.013929
+       min	0.000097
+      rmse	0.042342
+       sse	1.963134
+       std	0.031474
+
+```
+
+## KITTI 07 Feature
+### 4000
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results_feature_4000.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.14s
+
+Camera Parameters: 
+- fx: 707.091
+- fy: 707.091
+- cx: 601.887
+- cy: 183.11
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 10
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 4000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1101
+
+New Map created with 382 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+Tracking thread joined...
+-------
+
+median tracking time: 0.0192454
+mean tracking time: 0.0203938
+
+Saving camera trajectory to kitti07_results_feature_4000.txt ...
+
+trajectory saved!
+
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum 07/07_tum.txt kitti07_results_feature_4000.txt -as --plot --plot_mode xz
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	6.233862
+      mean	2.884539
+    median	2.846273
+       min	0.395835
+      rmse	3.025714
+       sse	10042.975118
+       std	0.913444
+
+```
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum  07/07_tum.txt  kitti07_results_feature_4000.txt  -as --plot --plot_mode xz --save_plot kitty07_feature_4000_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	2.164023
+      mean	0.419492
+    median	0.285860
+       min	0.000744
+      rmse	0.585692
+       sse	375.966324
+       std	0.408731
+
+
+```
+
+### 6000
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results_feature_6000.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.14s
+
+Camera Parameters: 
+- fx: 707.091
+- fy: 707.091
+- cx: 601.887
+- cy: 183.11
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 10
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 6000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1101
+
+New Map created with 607 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+Tracking thread joined...
+-------
+
+median tracking time: 0.0233534
+mean tracking time: 0.0251394
+
+Saving camera trajectory to kitti07_results_feature_6000.txt ...
+
+trajectory saved!
+
+```
+
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum 07/07_tum.txt kitti07_results_feature_6000.txt -as --plot --plot_mode xz
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	8.789715
+      mean	2.988044
+    median	2.877393
+       min	0.205106
+      rmse	3.149707
+       sse	10882.959167
+       std	0.996118
+
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum  07/07_tum.txt  kitti07_results_feature_6000.txt  -as --plot --plot_mode xz --save_plot kitty07_feature_6000_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	4.993400
+      mean	0.516838
+    median	0.336618
+       min	0.002348
+      rmse	0.780630
+       sse	667.884095
+       std	0.585032
+```
+
+### Compare 2000, 4000, 6000 with GT
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum kitti07_results.txt kitti07_results_feature_4000.txt kitti07_results_feature_6000.txt --ref=07/07_tum.txt -va --plot --plot_mode xz -as
+--------------------------------------------------------------------------------
+Loaded 1096 stamps and poses from: kitti07_results.txt
+Loaded 1097 stamps and poses from: kitti07_results_feature_4000.txt
+Loaded 1097 stamps and poses from: kitti07_results_feature_6000.txt
+Loaded 1101 stamps and poses from: 07/07_tum.txt
+--------------------------------------------------------------------------------
+Found 1096 of max. 1096 possible matching timestamps between...
+	reference
+and:	kitti07_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99899153  0.00410553  0.044711  ]
+ [-0.00388186  0.99997952 -0.00508842]
+ [-0.04473097  0.00490973  0.998987  ]]
+Translation of alignment:
+[-2.69692759  0.12189494 -2.7127717 ]
+Scale correction: 10.762813754301684
+--------------------------------------------------------------------------------
+Found 1097 of max. 1097 possible matching timestamps between...
+	reference
+and:	kitti07_results_feature_4000.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results_feature_4000.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99955873  0.00230078  0.02961499]
+ [-0.0021374   0.99998233 -0.00554729]
+ [-0.02962723  0.00548155  0.99954599]]
+Translation of alignment:
+[-1.58702634  0.10975954 -3.21275395]
+Scale correction: 11.77242602179473
+--------------------------------------------------------------------------------
+Found 1097 of max. 1097 possible matching timestamps between...
+	reference
+and:	kitti07_results_feature_6000.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results_feature_6000.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99970624 -0.00122686  0.02420577]
+ [ 0.00126748  0.99999781 -0.00166271]
+ [-0.02420368  0.00169291  0.99970561]]
+Translation of alignment:
+[-1.69659202  0.23490063 -3.40360758]
+Scale correction: 9.65683399589673
+--------------------------------------------------------------------------------
+name:	kitti07_results
+infos:
+	duration (s)	113.810101
+	nr. of poses	1096
+	path length (m)	734.6429605073652
+	pos_end (m)	[-3.8011658  -0.05963026  5.57862272]
+	pos_start (m)	[-2.69548234  0.11655785 -2.28660938]
+	t_end (s)	114.3296
+	t_start (s)	0.519499
+--------------------------------------------------------------------------------
+name:	kitti07_results_feature_4000
+infos:
+	duration (s)	113.913978
+	nr. of poses	1097
+	path length (m)	804.015691815851
+	pos_end (m)	[-2.89697646 -0.09249514  5.62246842]
+	pos_start (m)	[-1.60589074  0.10222065 -2.8501778 ]
+	t_end (s)	114.3296
+	t_start (s)	0.415622
+--------------------------------------------------------------------------------
+name:	kitti07_results_feature_6000
+infos:
+	duration (s)	113.913978
+	nr. of poses	1097
+	path length (m)	947.3936546985004
+	pos_end (m)	[-3.03987039  0.05444336  5.4937654 ]
+	pos_start (m)	[-1.7182772   0.22856003 -3.03166681]
+	t_end (s)	114.3296
+	t_start (s)	0.415622
+--------------------------------------------------------------------------------
+name:	07_tum
+infos:
+	duration (s)	114.3296
+	nr. of poses	1101
+	path length (m)	694.6967407086909
+	pos_end (m)	[-1.643555 -0.191078  9.367453]
+	pos_start (m)	[5.551115e-17 0.000000e+00 2.220446e-16]
+	t_end (s)	114.3296
+	t_start (s)	0.0
+```
+
+## KITTI 07 LOOP NO CLOSURE
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results_no_loop_closure.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.13s
+
+Camera Parameters: 
+- fx: 707.091
+- fy: 707.091
+- cx: 601.887
+- cy: 183.11
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 10
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 2000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1101
+
+New Map created with 165 points
+Viewer thread finished.
+Viewer started, waiting for thread.
+Tracking thread joined...
+-------
+
+median tracking time: 0.0136731
+mean tracking time: 0.0141749
+
+Saving camera trajectory to kitti07_results_no_loop_closure.txt ...
+
+trajectory saved!
+
+```
+
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum 07/07_tum.txt kitti07_results_no_loop_closure.txt -as --plot --plot_mode xz --save_plot kitty07_no_loop.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	47.472095
+      mean	14.487352
+    median	13.543359
+       min	1.088121
+      rmse	17.626794
+       sse	340531.452702
+       std	10.040942
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum 07/07_tum.txt kitti07_results_no_loop_closure.txt  -as --plot --plot_mode xz --save_plot kitty07_no_loop_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.347094
+      mean	0.120760
+    median	0.104467
+       min	0.001117
+      rmse	0.150538
+       sse	24.814517
+       std	0.089882
+
+```
+
+Trajectory Comparison
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum kitti07_results.txt kitti07_results_no_loop_closure.txt --ref=07/07_tum.txt -va --plot --plot_mode xz -as --save_plot kitty07_no_loop.png
+--------------------------------------------------------------------------------
+Loaded 1096 stamps and poses from: kitti07_results.txt
+Loaded 1096 stamps and poses from: kitti07_results_no_loop_closure.txt
+Loaded 1101 stamps and poses from: 07/07_tum.txt
+--------------------------------------------------------------------------------
+Found 1096 of max. 1096 possible matching timestamps between...
+	reference
+and:	kitti07_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99899153  0.00410553  0.044711  ]
+ [-0.00388186  0.99997952 -0.00508842]
+ [-0.04473097  0.00490973  0.998987  ]]
+Translation of alignment:
+[-2.69692759  0.12189494 -2.7127717 ]
+Scale correction: 10.762813754301684
+--------------------------------------------------------------------------------
+Found 1096 of max. 1096 possible matching timestamps between...
+	reference
+and:	kitti07_results_no_loop_closure.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results_no_loop_closure.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99227949 -0.01304314  0.12333402]
+ [ 0.01360181  0.99990069 -0.00368882]
+ [-0.12327366  0.00533791  0.99235836]]
+Translation of alignment:
+[-45.36468518   1.28221198  14.32948601]
+Scale correction: 6.1612968760262765
+--------------------------------------------------------------------------------
+name:	kitti07_results
+infos:
+	duration (s)	113.810101
+	nr. of poses	1096
+	path length (m)	734.6429605073652
+	pos_end (m)	[-3.8011658  -0.05963026  5.57862272]
+	pos_start (m)	[-2.69548234  0.11655785 -2.28660938]
+	t_end (s)	114.3296
+	t_start (s)	0.519499
+--------------------------------------------------------------------------------
+name:	kitti07_results_no_loop_closure
+infos:
+	duration (s)	113.810101
+	nr. of poses	1096
+	path length (m)	627.4862821286998
+	pos_end (m)	[16.91048077 -1.3748008  15.7684835 ]
+	pos_start (m)	[-45.3605908    1.27965276  14.5807596 ]
+	t_end (s)	114.3296
+	t_start (s)	0.519499
+--------------------------------------------------------------------------------
+name:	07_tum
+infos:
+	duration (s)	114.3296
+	nr. of poses	1101
+	path length (m)	694.6967407086909
+	pos_end (m)	[-1.643555 -0.191078  9.367453]
+	pos_start (m)	[5.551115e-17 0.000000e+00 2.220446e-16]
+	t_end (s)	114.3296
+	t_start (s)	0.0
+--------------------------------------------------------------------------------
+```

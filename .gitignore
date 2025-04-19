@@ -28,3 +28,10 @@ Develop/
 CMakeCache.txt
 CMakeFiles
 
+dataset/07
+dataset/10
+dataset/rgbd_dataset_freiburg1_xyz
+dataset/rgbd_dataset_freiburg2_large_with_loop
+dataset/rgbd_dataset_freiburg3_long_office_household
+
+evo

@@ -57,6 +57,8 @@ void LoopClosing::Run() {
   while (1) {
     // Check if there are keyframes in the queue
     if (CheckNewKeyFrames()) {
+      // cout << "No Loop Closed" << endl;
+
       // Detect loop candidates and check covisibility consistency
       if (DetectLoop()) {
         // Compute similarity transformation [sR|t]
@@ -371,6 +373,7 @@ bool LoopClosing::ComputeSim3() {
     return false;
   }
 }
+
 
 void LoopClosing::CorrectLoop() {
   cout << "Loop detected!" << endl;
