@@ -65,7 +65,7 @@ void LoopClosing::Run() {
         // In the stereo/RGBD case s=1
         if (ComputeSim3()) {
           // Perform loop fusion and pose graph optimization
-          // CorrectLoop();
+          CorrectLoop();
         }
       }
     }

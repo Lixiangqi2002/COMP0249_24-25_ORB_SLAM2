@@ -395,6 +395,167 @@ infos:
 
 ```
 
+
+## TUM No Outlier Rejection 
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_tum TUM3.yaml rgbd_dataset_freiburg3_long_office_household/ fr03_results_no_outlier_rejection.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.14s
+
+Camera Parameters: 
+- fx: 535.4
+- fy: 539.2
+- cx: 320.1
+- cy: 247.6
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 1000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 2585
+
+New Map created with 163 points
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.00939642
+mean tracking time: 0.00946798
+
+Saving camera trajectory to fr03_results_no_outlier_rejection.txt ...
+
+trajectory saved!
+All done
+
+```
+
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_no_outlier_rejection.txt -as --plot --plot_mode xz --save_plot tum_fr03_no_outlier_rejection_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	1.511066
+      mean	0.218821
+    median	0.137154
+       min	0.010786
+      rmse	0.325207
+       sse	208.240193
+       std	0.240576
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum rgbd_dataset_freiburg3_long_office_household/groundtruth.txt fr03_results_no_outlier_rejection.txt -as --plot --plot_mode xz --save_plot tum_fr03_no_outlier_rejection_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	2.419446
+      mean	0.012400
+    median	0.009169
+       min	0.000430
+      rmse	0.056455
+       sse	6.272268
+       std	0.055076
+
+```
+
+Compare
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum fr03_results.txt fr03_results_no_outlier_rejection.txt --ref=rgbd_dataset_freiburg3_long_office_household/groundtruth.txt -va --plot --plot_mode xz -as --save_plot tum_fr03_compare_no_oyutlier_rejection.png 
+--------------------------------------------------------------------------------
+Loaded 2558 stamps and poses from: fr03_results.txt
+Loaded 1969 stamps and poses from: fr03_results_no_outlier_rejection.txt
+Loaded 8710 stamps and poses from: rgbd_dataset_freiburg3_long_office_household/groundtruth.txt
+--------------------------------------------------------------------------------
+Found 2558 of max. 2558 possible matching timestamps between...
+	reference
+and:	fr03_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99958363 -0.01194273 -0.02626679]
+ [ 0.01725461  0.4822243  -0.87587785]
+ [ 0.02312686 -0.87596638 -0.48181745]]
+Translation of alignment:
+[-0.69439828  2.69913405  1.74473895]
+Scale correction: 2.5382504118349623
+--------------------------------------------------------------------------------
+Found 1969 of max. 1969 possible matching timestamps between...
+	reference
+and:	fr03_results_no_outlier_rejection.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning fr03_results_no_outlier_rejection.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[-0.99319494  0.1139805  -0.02392207]
+ [ 0.07875429  0.50596825 -0.85894929]
+ [-0.08579966 -0.85498805 -0.51150156]]
+Translation of alignment:
+[-0.68264439  2.79808644  1.66585198]
+Scale correction: 2.4965329119950246
+--------------------------------------------------------------------------------
+name:	fr03_results
+infos:
+	duration (s)	86.2361330986023
+	nr. of poses	2558
+	path length (m)	25.34406127097212
+	pos_end (m)	[-0.56838691  1.98046128  1.54239906]
+	pos_start (m)	[-0.61760596  2.71804483  1.74639093]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.626675
+--------------------------------------------------------------------------------
+name:	fr03_results_no_outlier_rejection
+infos:
+	duration (s)	86.20407009124756
+	nr. of poses	1969
+	path length (m)	30.999722807728432
+	pos_end (m)	[-0.56735581  2.05836247  1.45628079]
+	pos_start (m)	[-0.60032461  2.81874834  1.67826612]
+	t_end (s)	1341848067.862808
+	t_start (s)	1341847981.658738
+--------------------------------------------------------------------------------
+name:	groundtruth
+infos:
+	duration (s)	87.08949995040894
+	nr. of poses	8710
+	path length (m)	22.19745284585122
+	pos_end (m)	[-0.5503  1.9752  1.5438]
+	pos_start (m)	[-0.6832  2.6909  1.7373]
+	t_end (s)	1341848067.8795
+	t_start (s)	1341847980.79
+--------------------------------------------------------------------------------
+
+```
+
 ## TUM LOOP NO CLOSURE
 Estimation
 ```
@@ -554,6 +715,8 @@ infos:
 --------------------------------------------------------------------------------
 
 ```
+
+
 
 
 # KITTI (07; to use sequence No.10, replace all 07 to 10)
@@ -944,6 +1107,162 @@ infos:
 	t_start (s)	0.0
 ```
 
+## KITTI No Outlier Rejection 
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results_no_outlier_rejection.txt 
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.14s
+
+Camera Parameters: 
+- fx: 707.091
+- fy: 707.091
+- cx: 601.887
+- cy: 183.11
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 10
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 2000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1101
+
+New Map created with 159 points
+Viewer thread finished.
+Viewer started, waiting for thread.
+Tracking thread joined...
+-------
+
+median tracking time: 0.0167509
+mean tracking time: 0.0167295
+
+Saving camera trajectory to kitti07_results_no_outlier_rejection.txt ...
+
+trajectory saved!
+
+```
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_ape tum 07/07_tum.txt kitti07_results_no_outlier_rejection.txt -as --plot --plot_mode xz --save_plot kitty07_no_outlier_rejection_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	25.559268
+      mean	8.590777
+    median	8.016600
+       min	0.784415
+      rmse	9.572419
+       sse	58918.867519
+       std	4.222530
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_rpe tum 07/07_tum.txt kitti07_results_no_outlier_rejection.txt -as --plot --plot_mode xz --save_plot kitty07_no_outlier_rejection_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	43.377455
+      mean	0.204594
+    median	0.109147
+       min	0.004394
+      rmse	1.720274
+       sse	1899.898889
+       std	1.708065
+
+```
+
+Compare
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ evo_traj tum kitti07_results.txt kitti07_results_no_outlier_rejection.txt --ref=07/07_tum.txt -va --plot --plot_mode xz -as --save_plot kitti07_compare_no_oyutlier_rejection.png 
+--------------------------------------------------------------------------------
+Loaded 1096 stamps and poses from: kitti07_results.txt
+Loaded 643 stamps and poses from: kitti07_results_no_outlier_rejection.txt
+Loaded 1101 stamps and poses from: 07/07_tum.txt
+--------------------------------------------------------------------------------
+Found 1096 of max. 1096 possible matching timestamps between...
+	reference
+and:	kitti07_results.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99899153  0.00410553  0.044711  ]
+ [-0.00388186  0.99997952 -0.00508842]
+ [-0.04473097  0.00490973  0.998987  ]]
+Translation of alignment:
+[-2.69692759  0.12189494 -2.7127717 ]
+Scale correction: 10.762813754301684
+--------------------------------------------------------------------------------
+Found 643 of max. 643 possible matching timestamps between...
+	reference
+and:	kitti07_results_no_outlier_rejection.txt
+..with max. time diff.: 0.01 (s) and time offset: 0.0 (s).
+--------------------------------------------------------------------------------
+Aligning kitti07_results_no_outlier_rejection.txt to reference.
+Aligning using Umeyama's method... (with scale correction)
+Rotation of alignment:
+[[ 0.99738257 -0.01195194  0.07131029]
+ [ 0.01130369  0.9998911   0.00948734]
+ [-0.07141592 -0.00865643  0.99740906]]
+Translation of alignment:
+[-10.62791836   0.09139192   4.93330085]
+Scale correction: 9.320975595635101
+--------------------------------------------------------------------------------
+name:	kitti07_results
+infos:
+	duration (s)	113.810101
+	nr. of poses	1096
+	path length (m)	734.6429605073652
+	pos_end (m)	[-3.8011658  -0.05963026  5.57862272]
+	pos_start (m)	[-2.69548234  0.11655785 -2.28660938]
+	t_end (s)	114.3296
+	t_start (s)	0.519499
+--------------------------------------------------------------------------------
+name:	kitti07_results_no_outlier_rejection
+infos:
+	duration (s)	113.810101
+	nr. of poses	643
+	path length (m)	599.6728700909739
+	pos_end (m)	[-11.30782465   0.01465784  11.75671582]
+	pos_start (m)	[-10.64373259   0.0909995    5.2968149 ]
+	t_end (s)	114.3296
+	t_start (s)	0.519499
+--------------------------------------------------------------------------------
+name:	07_tum
+infos:
+	duration (s)	114.3296
+	nr. of poses	1101
+	path length (m)	694.6967407086909
+	pos_end (m)	[-1.643555 -0.191078  9.367453]
+	pos_start (m)	[5.551115e-17 0.000000e+00 2.220446e-16]
+	t_end (s)	114.3296
+	t_start (s)	0.0
+--------------------------------------------------------------------------------
+```
 ## KITTI 07 LOOP NO CLOSURE
 Estimation
 ```

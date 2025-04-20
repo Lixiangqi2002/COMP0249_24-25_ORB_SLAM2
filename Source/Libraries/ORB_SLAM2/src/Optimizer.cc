@@ -360,6 +360,8 @@ int Optimizer::PoseOptimization(Frame *pFrame) {
   // at the end they can be classified as inliers again.
   const float chi2Mono[4] = {5.991, 5.991, 5.991, 5.991};
   const float chi2Stereo[4] = {7.815, 7.815, 7.815, 7.815};
+  // const float chi2Mono[4] = {9999, 9999, 9999, 9999}; // high threshold for outlier rejection not working
+  // const float chi2Stereo[4] = {9999, 9999, 9999, 9999};
   const int its[4] = {10, 10, 10, 10};
 
   int nBad = 0;
