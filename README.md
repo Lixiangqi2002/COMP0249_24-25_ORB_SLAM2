@@ -1264,6 +1264,7 @@ infos:
 --------------------------------------------------------------------------------
 ```
 ## KITTI 07 LOOP NO CLOSURE
+
 Estimation
 ```
 (navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset$ mono_kitti KITTI04-12.yaml 07 kitti07_results_no_loop_closure.txt
@@ -1420,3 +1421,114 @@ infos:
 	t_start (s)	0.0
 --------------------------------------------------------------------------------
 ```
+
+
+# Part 2
+
+## Outdoor
+
+### ORB SLAM 2
+Estimation
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ mono_tum  G10Outdoor.yaml outdoor outdoor_results.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.13s
+
+Camera Parameters: 
+- fx: 768
+- fy: 768
+- cx: 320
+- cy: 240
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 5
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 2000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 904
+
+New Map created with 166 points
+Local Mapping STOP
+Local Mapping RELEASE
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.0260453
+mean tracking time: 0.0269453
+
+Saving camera trajectory to outdoor_results.txt ...
+
+trajectory saved!
+All done
+
+
+```
+
+APE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_ape tum outdoor/outdoor_results.txt outdoor/outdoor_colmap_results.txt  -as --plot --plot_mode xz --save_plot outdoor_ape.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.242633
+      mean	0.034259
+    median	0.026323
+       min	0.003368
+      rmse	0.048379
+       sse	2.106462
+       std	0.034159
+
+```
+
+RPE
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_rpe tum outdoor/outdoor_results.txt outdoor/outdoor_colmap_results.txt  -as --plot --plot_mode xz --save_plot outdoor_rpe.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.030098
+      mean	0.003973
+    median	0.003228
+       min	0.000173
+      rmse	0.005161
+       sse	0.023950
+       std	0.003295
+
+```
+Comparison with COLMAP
+```
+(navigation0249) selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_traj tum  outdoor/outdoor_results.txt --ref=outdoor/outdoor_colmap_results.txt -p --plot_mode xyz -as --save_plot outdoor_compare.png
+--------------------------------------------------------------------------------
+name:	outdoor_results
+infos:	900 poses, 24.668m path length, 179.800s duration
+--------------------------------------------------------------------------------
+name:	outdoor_colmap_results
+infos:	900 poses, 22.580m path length, 179.800s duration
+--------------------------------------------------------------------------------
+```
+
+## Indoor
+Estimation
