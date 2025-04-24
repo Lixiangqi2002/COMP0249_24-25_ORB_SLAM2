@@ -37,5 +37,7 @@ dataset/rgbd_dataset_freiburg1_xyz
 dataset/rgbd_dataset_freiburg2_large_with_loop
 dataset/rgbd_dataset_freiburg3_long_office_household
 dataset/g10_dataset/outdoor/images.txt
-
+dataset/g10_dataset/indoor/rgb
+dataset/g10_dataset/indoor/indoor_database_2.db
+dataset/g10_dataset/indoor/images.txt
 evo

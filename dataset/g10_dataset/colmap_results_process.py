@@ -42,12 +42,10 @@ def write_results(timestamps, poses, output_path):
             tx, ty, tz, qx, qy, qz, qw = pose
             f.write(f"{timestamp} {tx:.6f} {ty:.6f} {tz:.6f} {qx:.6f} {qy:.6f} {qz:.6f} {qw:.6f}\n")
 
-# ==== 路径配置 ====
-timestamps_path = "outdoor/outdoor_results.txt"
-images_txt_path = "outdoor/images.txt"
-output_path = "outdoor/outdoor_colmap_results.txt"
+timestamps_path = "indoor2/indoor_results.txt"
+images_txt_path = "indoor2/images.txt"
+output_path = "indoor2/indoor_colmap_results.txt"
 
-# ==== 主流程 ====
 timestamps = read_timestamps(timestamps_path)
 poses = parse_images_txt(images_txt_path)
 
