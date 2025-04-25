@@ -381,6 +381,8 @@ int Optimizer::PoseOptimization(Frame *pFrame) {
 
       const float chi2 = e->chi2();
 
+      // const float chi2Mono[4] = {9999, 9999, 9999, 9999}; // 非常高的阈值
+      // const float chi2Stereo[4] = {9999, 9999, 9999, 9999};
       if (chi2 > chi2Mono[it]) {
         pFrame->mvbOutlier[idx] = true;
         e->setLevel(1);

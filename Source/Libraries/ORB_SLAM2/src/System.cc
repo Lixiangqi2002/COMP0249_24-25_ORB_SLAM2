@@ -26,6 +26,10 @@
 #include <iomanip>
 #include <pangolin/pangolin.h>
 #include <thread>
+#include <sys/stat.h>     // mkdir
+#include <unistd.h>       // access
+#include <fstream>
+#include <sstream>
 
 namespace fs = ::boost::filesystem;
 using namespace ::std;
@@ -353,7 +357,32 @@ void System::Shutdown() {
 }
 
 void System::SaveTrajectoryTUM(const string &filename) {
-  cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
+
+  // 自动创建文件夹 & 避免文件名重复
+  size_t found = filename.find_last_of("/\\");
+  string folder = filename.substr(0, found);
+  string name = filename.substr(found + 1);
+
+  // 创建文件夹（如果不存在）
+  if (access(folder.c_str(), F_OK) == -1) {
+    cout << "Creating directory: " << folder << endl;
+    mkdir(folder.c_str(), 0777);
+  }
+
+  // 检查是否有同名文件
+  string final_filename = filename;
+  int count = 1;
+  while (access(final_filename.c_str(), F_OK) != -1) {
+    stringstream ss;
+    ss << folder << "/" << count << "_" << name;
+    final_filename = ss.str();
+    count++;
+  }
+
+  cout << endl << "Saving camera trajectory to " << final_filename << " ..." << endl;
+  
+
+  // cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
 
   vector<KeyFrame *> vpKFs = mpMap->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
@@ -368,7 +397,8 @@ void System::SaveTrajectoryTUM(const string &filename) {
   cv::Mat Two = vpKFs[0]->GetPoseInverse();
 
   ofstream f;
-  f.open(filename.c_str());
+  f.open(final_filename.c_str());
+  // f.open(filename.c_str());
   f << fixed;
 
   // Frame pose is stored relative to its reference keyframe (which is optimized
@@ -450,7 +480,30 @@ void System::SaveKeyFrameTrajectoryTUM(const string &filename) {
 }
 
 void System::SaveTrajectoryKITTI(const string &filename) {
-  cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
+    // 自动创建文件夹 & 避免文件名重复
+  size_t found = filename.find_last_of("/\\");
+  string folder = filename.substr(0, found);
+  string name = filename.substr(found + 1);
+
+  // 创建文件夹（如果不存在）
+  if (access(folder.c_str(), F_OK) == -1) {
+    cout << "Creating directory: " << folder << endl;
+    mkdir(folder.c_str(), 0777);
+  }
+
+  // 检查是否有同名文件
+  string final_filename = filename;
+  int count = 1;
+  while (access(final_filename.c_str(), F_OK) != -1) {
+    stringstream ss;
+    ss << folder << "/" << count << "_" << name;
+    final_filename = ss.str();
+    count++;
+  }
+
+  cout << endl << "Saving camera trajectory to " << final_filename << " ..." << endl;
+
+  // cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
   if (mSensor == MONOCULAR) {
     cerr << "ERROR: SaveTrajectoryKITTI cannot be used for monocular." << endl;
     return;
@@ -464,7 +517,8 @@ void System::SaveTrajectoryKITTI(const string &filename) {
   cv::Mat Two = vpKFs[0]->GetPoseInverse();
 
   ofstream f;
-  f.open(filename.c_str());
+  f.open(final_filename.c_str());
+  // f.open(filename.c_str());
   f << fixed;
 
   // Frame pose is stored relative to its reference keyframe (which is optimized

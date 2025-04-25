@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
       if (ttrack < T)
         this_thread::sleep_for(chrono::duration<double>(T - ttrack));
     }
-    SLAM.StopViewer();
+    // SLAM.StopViewer();
   });
 
   // Start the visualization thread; this blocks until the SLAM system
@@ -126,6 +126,8 @@ int main(int argc, char **argv) {
     return main_error;
 
   // Stop all threads
+
+
   SLAM.Shutdown();
   cout << "System Shutdown" << endl;
 
@@ -143,6 +145,8 @@ int main(int argc, char **argv) {
   SLAM.SaveTrajectoryTUM(string(argv[3]));
 
   cout << "All done" << endl;
+
+
   
   return main_error;
 }

@@ -27,4 +27,8 @@ lib/
 Develop/
 CMakeCache.txt
 CMakeFiles
-
+.history/*
+dataset/*
+myDataset/*
+*.zip
+results/*

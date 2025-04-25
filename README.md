@@ -74,55 +74,7 @@ You can get errors of the form `terminate called after throwing an instance of '
 
 `export DISPLAY=:0`
 
-### Mac (Intel and Apple Silicon) build instructions
 
-We use `homebrew` (https://brew.sh/) and build using the XCode command line tools. Please ensure that both have been installed and that `brew doctor` is happy.
-
-Install the dependencies:
-
-`brew install cmake eigen boost suitesparse opencv glew`
-
-You should be able to build the release by by running:
-
-`./Build.sh`
-
-To build a debug version, type:
-
-`./Build.sh Debug`
-
-If you want to avoid typing `./Install/bin` everywhere, run this command from the command line:
-
-`export PATH=$PATH:$PWD/Install/bin`
-
-### Windows 10/11 native build (does not work; do NOT use - use WSL instructions instead)
-
-Windows 10/11 is a more challenging OS to build on because it doesn't have a completely standard location for development. We use `vcpkg` (https://github.com/microsoft/vcpkg) but other package management systems are available.
-
-You need to install [git](https://git-scm.com/downloads), [Visual Studio](https://visualstudio.microsoft.com/vs/community/) and [vcpkg](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-powershell).
-
-After cloning the repository, install the vcpkg dependencies by running:
-
-`vcpkg install`
-
-This should create a directory `vcpkg_installed` in the current directory.
-
-You should be able to build by running:
-
-`Build.bat`
-
-to build a release version. To build a debug version, type:
-
-`Build.bat Debug`
-
-Internally, cmake uses `Ninja`.
-
-Set the path:
-
-`set PATH=%PATH%;%cd%\vcpkg_installed\%VCPKG_TRIPLE%`
-
-If you want to avoid typing `Install\bin everywhere`, modify the command to
-
-`set PATH=%PATH%;%cd%\Install\bin;%cd%\vcpkg_installed\%VCPKG_TRIPLE%`
 
 ## Running Examples
 
@@ -144,7 +96,7 @@ For example, suppose we wish to run `mono_tum` on the Freiburg `fr1/xyz dataset`
 
 You can then run the code using:
 
-`mono_tum TUM1.yaml rgbd_dataset_freiburg1_xyz fr01_results.txt` 
+`mono_tum TUM1.yaml dataset/rgbd_dataset_freiburg1_xyz fr01_results.txt` 
 
 This will open the GUI, run the example, and write out a text file called `fr01_results.txt` which contains a time set of estiamtes of the camera pose.
    
