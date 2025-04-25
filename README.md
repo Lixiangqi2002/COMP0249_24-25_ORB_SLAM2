@@ -1531,6 +1531,116 @@ infos:	900 poses, 22.580m path length, 179.800s duration
 ```
 
 ## Indoor
+
+### NO REFINE INTRINSIC
+Estimation
+```
+selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ mono_tum G10Indoor.yaml indoor indoor_results_no_refine.txt
+
+ORB-SLAM2 Copyright (C) 2014-2016 Raul Mur-Artal, University of Zaragoza.
+(modifications carried out at UCL, 2022)
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+Input sensor was set to: Monocular
+
+Loading ORB Vocabulary. This could take a while...
+Using the binary cache file
+Vocabulary loaded in 0.10s
+
+Camera Parameters: 
+- fx: 1152
+- fy: 1152
+- cx: 272
+- cy: 480
+- k1: 0
+- k2: 0
+- p1: 0
+- p2: 0
+- fps: 30
+- color order: RGB (ignored if grayscale)
+
+ORB Extractor Parameters: 
+- Number of Features: 4000
+- Scale Levels: 8
+- Scale Factor: 1.2
+- Initial Fast Threshold: 20
+- Minimum Fast Threshold: 7
+
+-------
+Start processing sequence ...
+Images in the sequence: 1375
+
+New Map created with 377 points
+Loop detected!
+Local Mapping STOP
+Local Mapping RELEASE
+Starting Global Bundle Adjustment
+Global Bundle Adjustment finished
+Updating map ...
+Local Mapping STOP
+Local Mapping RELEASE
+Map updated!
+Viewer thread finished.
+Viewer started, waiting for thread.
+System Shutdown
+-------
+
+median tracking time: 0.0186206
+mean tracking time: 0.0191907
+
+Saving camera trajectory to indoor_results.txt ...
+
+trajectory saved!
+All done
+
+```
+
+APE
+```
+selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_ape tum indoor/indoor_results_no_refine.txt indoor/indoor_colmap_results.txt  -as --plot --plot_mode xz --save_plot indoor_ape_no_refine.png
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.719911
+      mean	0.226702
+    median	0.218589
+       min	0.011103
+      rmse	0.251178
+       sse	85.992067
+       std	0.108151
+
+```
+
+RPE
+```
+selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_rpe tum indoor/indoor_results_no_refine.txt indoor/indoor_colmap_results.txt  -as --plot --plot_mode xz --save_plot indoor_rpe_no_refine.png
+RPE w.r.t. translation part (m)
+for delta = 1 (frames) using consecutive pairs
+(with Sim(3) Umeyama alignment)
+
+       max	0.272122
+      mean	0.010102
+    median	0.007551
+       min	0.000663
+      rmse	0.020416
+       sse	0.567675
+       std	0.017741
+```
+
+Compare
+```
+selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_traj tum  indoor/indoor_results_no_refine.txt --ref=indoor/indoor_colmap_results.txt -p --plot_mode xyz -as --save_plot indoor_compare_no_refine.png
+--------------------------------------------------------------------------------
+name:	indoor_results_no_refine
+infos:	1363 poses, 42.193m path length, 45.400s duration
+--------------------------------------------------------------------------------
+name:	indoor_colmap_results
+infos:	1363 poses, 37.325m path length, 45.400s duration
+--------------------------------------------------------------------------------
+```
+### COLMAP REFINE INTRINSIC:
 Estimation
 ```
 selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ mono_tum G10Indoor.yaml indoor indoor_results.txt
@@ -1585,8 +1695,8 @@ Viewer started, waiting for thread.
 System Shutdown
 -------
 
-median tracking time: 0.017951
-mean tracking time: 0.0184483
+median tracking time: 0.0186206
+mean tracking time: 0.0191907
 
 Saving camera trajectory to indoor_results.txt ...
 
@@ -1601,15 +1711,13 @@ selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigatio
 APE w.r.t. translation part (m)
 (with Sim(3) Umeyama alignment)
 
-       max	0.719911
-      mean	0.226702
-    median	0.218589
-       min	0.011103
-      rmse	0.251178
-       sse	85.992067
-       std	0.108151
-
-
+       max	0.662035
+      mean	0.222179
+    median	0.215731
+       min	0.018393
+      rmse	0.242733
+       sse	80.306776
+       std	0.097753
 ```
 
 RPE
@@ -1619,23 +1727,21 @@ RPE w.r.t. translation part (m)
 for delta = 1 (frames) using consecutive pairs
 (with Sim(3) Umeyama alignment)
 
-       max	0.272122
-      mean	0.010102
-    median	0.007551
-       min	0.000663
-      rmse	0.020416
-       sse	0.567675
-       std	0.017741
-
+       max	0.249451
+      mean	0.009295
+    median	0.007217
+       min	0.000715
+      rmse	0.015702
+       sse	0.335809
+       std	0.012655
 
 ```
-
 Compare
 ```
 selina-xiangqi@selina-xiangqi-Legion-R9000P-ARX8:~/ucl2024/robotVision_Navigation/COMP0249_24-25_ORB_SLAM2/dataset/g10_dataset$ evo_traj tum  indoor/indoor_results.txt --ref=indoor/indoor_colmap_results.txt -p --plot_mode xyz -as --save_plot indoor_compare.png
 --------------------------------------------------------------------------------
 name:	indoor_results
-infos:	1363 poses, 42.193m path length, 45.400s duration
+infos:	1363 poses, 39.419m path length, 45.400s duration
 --------------------------------------------------------------------------------
 name:	indoor_colmap_results
 infos:	1363 poses, 37.325m path length, 45.400s duration
